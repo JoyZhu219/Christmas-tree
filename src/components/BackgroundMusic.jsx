@@ -60,9 +60,9 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
   return (
     <audio 
         ref={audioRef} 
-        src="/music/bgm.mp4" 
+        src="/music/bgm.mp3"
         loop 
-        preload="auto" 
+        preload="auto"
     />
   )
 }

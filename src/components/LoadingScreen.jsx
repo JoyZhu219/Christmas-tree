@@ -20,10 +20,10 @@ export default function LoadingScreen({ started }) {
     >
       <div className="text-center">
         <div className="luxury-text text-5xl md:text-7xl font-bold mb-6 text-luxury-gold">
-          GRAND LUXURY
+          Joyeux Noël
         </div>
         <div className="luxury-text text-xl md:text-2xl font-light tracking-widest mb-8 text-white">
-          CHRISTMAS TREE
+          ✧ Christmas Tree ✧
         </div>
         
         {/* Loading Bar */}
