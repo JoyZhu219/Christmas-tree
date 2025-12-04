@@ -9,20 +9,40 @@ export default function UIOverlay({
   isMuted, 
   onToggleMute 
 }) {
+  // 定义 Info 点击事件
+  const handleInfoClick = (e) => {
+    e.stopPropagation()
+    alert('🎄 Joyeux Noël\n\n✨ 沉浸式 3D 视觉盛宴\n\n🌟 数万颗流光金粉粒子\n🎁 纯金丝带礼盒与璀璨钻石\n📸 悬浮拍立得回忆画廊\n\n🔮 交互指南：\n✋ 张开手掌 / 点击屏幕：解构星云 (Unleash)\n✊ 握紧拳头 / 再次点击：重塑辉煌 (Reform)\n👋 手势移动 / 滑动屏幕：环绕视角 (Rotate)')
+  }
+
   return (
     <>
-      {/* 1. 标题 (Updated Title) */}
+      {/* 1. 标题 (Updated Title & Mobile Fix) */}
       <div 
-        className="fixed top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none z-10 transition-opacity duration-2000"
+        className="fixed top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none z-10 transition-opacity duration-2000 w-full px-4"
         style={{ 
           opacity: isLoading ? 0 : 0.7,
           transitionDelay: '500ms'
         }}
       >
-        <h1 className="luxury-text font-bold tracking-wider text-luxury-gold drop-shadow-md" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontFamily: 'serif' }}>
+        <h1 
+          className="luxury-text font-bold tracking-wider text-luxury-gold drop-shadow-md whitespace-nowrap"
+          style={{ 
+            fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', 
+            fontFamily: 'serif' 
+          }}
+        >
           Joyeux Noël
         </h1>
-        <p className="luxury-text font-light tracking-widest text-white/80 text-sm md:text-base" style={{ letterSpacing: '0.2em', marginTop: '0.5rem' }}>
+        
+        <p 
+          className="luxury-text font-light text-white/80 text-[10px] md:text-base whitespace-nowrap"
+          style={{ 
+            letterSpacing: isMobile ? '0.15em' : '0.25em', 
+            marginTop: '0.5rem',
+            lineHeight: 1
+          }}
+        >
           ✧ Christmas Tree ✧
         </p>
       </div>
@@ -39,9 +59,10 @@ export default function UIOverlay({
         </div>
       </div>
 
-      {/* 3. 左侧控制组 (相机 + 声音) */}
+      {/* 3. 左侧控制组 (功能按钮统一归纳于此) */}
       <div className="fixed top-8 left-8 z-20 flex flex-col gap-4 transition-opacity duration-1000" style={{ opacity: isLoading ? 0 : 1 }}>
         
+        {/* 相机开关 (仅桌面端) */}
         {!isMobile && (
           <button
             onClick={(e) => { e.stopPropagation(); onToggleCamera(); }}
@@ -57,6 +78,7 @@ export default function UIOverlay({
           </button>
         )}
 
+        {/* 声音开关 */}
         <button
           onClick={onToggleMute}
           className="w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
@@ -64,9 +86,19 @@ export default function UIOverlay({
         >
           <span className="text-lg">{isMuted ? '🔇' : '🔊'}</span>
         </button>
+
+        {/* --- Info 按钮  --- */}
+        {/* 这样手机上它就在声音按钮下面，绝对不会遮挡底部的文字 */}
+        <button
+          onClick={handleInfoClick}
+          className="w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
+          title="Info"
+        >
+          <span className="text-lg">ℹ️</span>
+        </button>
       </div>
 
-      {/* 4. 底部操作提示 */}
+      {/* 4. 底部操作提示 (现在它是底部唯一的元素了，非常干净) */}
       <div 
         className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-20 transition-opacity duration-1000 w-max max-w-[90vw]"
         style={{ 
@@ -97,18 +129,6 @@ export default function UIOverlay({
           }
         </p>
       </div>
-
-      {/* 5. 信息按钮 */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          alert('🎄 Joyeux Noël\n\n✨ 沉浸式 3D 视觉盛宴\n\n🌟 数万颗流光金粉粒子\n🎁 纯金丝带礼盒与璀璨钻石\n📸 悬浮拍立得回忆画廊\n\n🔮 交互指南：\n✋ 张开手掌 / 点击屏幕：解构星云 (Unleash)\n✊ 握紧拳头 / 再次点击：重塑辉煌 (Reform)\n👋 手势移动 / 滑动屏幕：环绕视角 (Rotate)')
-        }}
-        className="fixed bottom-8 right-8 z-20 w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
-        style={{ opacity: isLoading ? 0 : 0.8 }}
-      >
-        <span className="text-lg">ℹ️</span>
-      </button>
     </>
   )
 }
