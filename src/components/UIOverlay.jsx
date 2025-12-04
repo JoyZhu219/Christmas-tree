@@ -11,7 +11,7 @@ export default function UIOverlay({
 }) {
   return (
     <>
-      {/* 1. 标题 (加载后淡入) */}
+      {/* 1. 标题 (Updated Title) */}
       <div 
         className="fixed top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none z-10 transition-opacity duration-2000"
         style={{ 
@@ -19,11 +19,11 @@ export default function UIOverlay({
           transitionDelay: '500ms'
         }}
       >
-        <h1 className="luxury-text font-bold tracking-wider text-luxury-gold drop-shadow-md" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
-          GRAND LUXURY
+        <h1 className="luxury-text font-bold tracking-wider text-luxury-gold drop-shadow-md" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontFamily: 'serif' }}>
+          Joyeux Noël
         </h1>
-        <p className="luxury-text font-light tracking-widest text-white/80 text-sm md:text-base" style={{ letterSpacing: '0.3em' }}>
-          CHRISTMAS TREE
+        <p className="luxury-text font-light tracking-widest text-white/80 text-sm md:text-base" style={{ letterSpacing: '0.2em', marginTop: '0.5rem' }}>
+          ✧ Christmas Tree ✧
         </p>
       </div>
 
@@ -42,7 +42,6 @@ export default function UIOverlay({
       {/* 3. 左侧控制组 (相机 + 声音) */}
       <div className="fixed top-8 left-8 z-20 flex flex-col gap-4 transition-opacity duration-1000" style={{ opacity: isLoading ? 0 : 1 }}>
         
-        {/* 相机开关 (仅桌面端显示，手机端为了性能隐藏) */}
         {!isMobile && (
           <button
             onClick={(e) => { e.stopPropagation(); onToggleCamera(); }}
@@ -58,7 +57,6 @@ export default function UIOverlay({
           </button>
         )}
 
-        {/* 声音开关 */}
         <button
           onClick={onToggleMute}
           className="w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
@@ -100,11 +98,11 @@ export default function UIOverlay({
         </p>
       </div>
 
-      {/* 5. 信息按钮 (Info) */}
+      {/* 5. 信息按钮 */}
       <button
         onClick={(e) => {
           e.stopPropagation()
-          alert('🎄 极致奢华互动圣诞树\n(Grand Luxury Christmas Tree)\n\n✨ 沉浸式 3D 视觉盛宴\n\n🌟 数万颗流光金粉粒子\n🎁 纯金丝带礼盒与璀璨钻石\n📸 悬浮拍立得回忆画廊\n\n🔮 交互指南：\n✋ 张开手掌 / 点击屏幕：解构星云 (Unleash)\n✊ 握紧拳头 / 再次点击：重塑辉煌 (Reform)\n👋 手势移动 / 滑动屏幕：环绕视角 (Rotate)')
+          alert('🎄 Joyeux Noël\n\n✨ 沉浸式 3D 视觉盛宴\n\n🌟 数万颗流光金粉粒子\n🎁 纯金丝带礼盒与璀璨钻石\n📸 悬浮拍立得回忆画廊\n\n🔮 交互指南：\n✋ 张开手掌 / 点击屏幕：解构星云 (Unleash)\n✊ 握紧拳头 / 再次点击：重塑辉煌 (Reform)\n👋 手势移动 / 滑动屏幕：环绕视角 (Rotate)')
         }}
         className="fixed bottom-8 right-8 z-20 w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
         style={{ opacity: isLoading ? 0 : 0.8 }}

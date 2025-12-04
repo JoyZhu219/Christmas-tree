@@ -7,7 +7,9 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
   useEffect(() => {
     const handleFirstInteraction = () => {
       if (!hasInteracted && audioRef.current) {
+        // --- 修改 1: 直接设置目标音量，不再从 0 开始 ---
         audioRef.current.volume = 0.5 
+        
         const playPromise = audioRef.current.play()
         
         if (playPromise !== undefined) {
@@ -36,10 +38,10 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
   useEffect(() => {
     if (audioRef.current) {
       if (isMuted) {
-        // 淡出
+        // 静音时快速淡出（保留淡出比较自然）
         const fadeAudio = setInterval(() => {
             if (audioRef.current.volume > 0.05) {
-                audioRef.current.volume -= 0.05
+                audioRef.current.volume -= 0.1 // 加快淡出速度
             } else {
                 audioRef.current.pause()
                 clearInterval(fadeAudio)
@@ -48,15 +50,8 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
       } else {
         if (hasInteracted) {
             audioRef.current.play()
-            // 淡入
-            audioRef.current.volume = 0
-            const fadeAudio = setInterval(() => {
-                if (audioRef.current.volume < 0.5) {
-                    audioRef.current.volume += 0.05
-                } else {
-                    clearInterval(fadeAudio)
-                }
-            }, 50)
+            // --- 修改 2: 取消淡入，直接恢复音量 ---
+            audioRef.current.volume = 0.5 
         }
       }
     }
@@ -65,11 +60,9 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
   return (
     <audio 
         ref={audioRef} 
-        /* 指向 mp4 文件 */
         src="/music/bgm.mp4" 
         loop 
         preload="auto" 
-        /* 即使是 mp4，放在 audio 标签里也只会播放声音 */
     />
   )
 }
