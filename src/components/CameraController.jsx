@@ -6,30 +6,24 @@ export default function CameraController({ handX, handY }) {
   
   useFrame(() => {
     // 基础参数
-    const radius = 22 // 摄像机距离
-    const height = 5  // 摄像机高度中心
+    const defaultDist = 24 
+    const defaultHeight = 4 
     
-    // 旋转逻辑：handX (-1 到 1) 映射为角度偏移
-    // 范围设为 ±1.5 弧度 (约 ±85度)，让你能看到树的侧面
-    const angleOffset = (handX || 0) * 1.5 
-    const baseAngle = Math.PI / 2 // 初始位置在 Z 轴正向 (90度位置)
+    const targetAngle = (handX || 0) * 1.5 
+    const targetY = defaultHeight + (handY || 0) * 8
 
-    // 高度逻辑：handY 控制俯仰
-    const targetY = height + (handY || 0) * 8
+    const targetX = Math.sin(targetAngle) * defaultDist
+    const targetZ = Math.cos(targetAngle) * defaultDist
 
-    // 计算轨道位置 (Orbit)
-    // x = cos(angle) * r, z = sin(angle) * r
-    // 注意：Three.js 坐标系通常 Z 是正前方
-    const targetX = Math.cos(baseAngle + angleOffset) * radius
-    const targetZ = Math.sin(baseAngle + angleOffset) * radius
-
-    // 平滑插值
     camera.position.x = THREE.MathUtils.lerp(camera.position.x, targetX, 0.05)
     camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.05)
     camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.05)
     
-    // 始终盯着树的中心
-    camera.lookAt(0, 6, 0)
+    // --- 修改点：提高 LookAt 的 Y 值 ---
+    // 之前是 lookAt(0, 5, 0)。
+    // 改为 lookAt(0, 6.5, 0)。
+    // 原理：摄像机抬头看更高的地方，相对而言，物体在屏幕上就会“下沉”，从而居中。
+    camera.lookAt(0, 6.5, 0)
   })
 
   return null
