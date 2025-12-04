@@ -1,9 +1,17 @@
 import React from 'react'
 
-export default function UIOverlay({ state, isMobile, cameraEnabled, onToggleCamera, isLoading }) {
+export default function UIOverlay({ 
+  state, 
+  isMobile, 
+  cameraEnabled, 
+  onToggleCamera, 
+  isLoading, 
+  isMuted, 
+  onToggleMute 
+}) {
   return (
     <>
-      {/* Title - 加载后淡入 */}
+      {/* 1. 标题 (加载后淡入) */}
       <div 
         className="fixed top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none z-10 transition-opacity duration-2000"
         style={{ 
@@ -19,7 +27,7 @@ export default function UIOverlay({ state, isMobile, cameraEnabled, onToggleCame
         </p>
       </div>
 
-      {/* State Indicator - 右上角状态胶囊 */}
+      {/* 2. 状态指示器 (右上角) */}
       <div 
         className="fixed top-8 right-8 z-20 pointer-events-none transition-opacity duration-1000"
         style={{ opacity: isLoading ? 0 : 0.8 }}
@@ -31,7 +39,36 @@ export default function UIOverlay({ state, isMobile, cameraEnabled, onToggleCame
         </div>
       </div>
 
-      {/* Controls Hint - 底部操作提示 (核心修改) */}
+      {/* 3. 左侧控制组 (相机 + 声音) */}
+      <div className="fixed top-8 left-8 z-20 flex flex-col gap-4 transition-opacity duration-1000" style={{ opacity: isLoading ? 0 : 1 }}>
+        
+        {/* 相机开关 (仅桌面端显示，手机端为了性能隐藏) */}
+        {!isMobile && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleCamera(); }}
+            className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-luxury-gold/30 hover:bg-black/80 hover:border-luxury-gold transition-all duration-300 group flex items-center gap-2"
+          >
+            <span className="text-luxury-gold/80 group-hover:text-luxury-gold text-xs font-bold tracking-wider flex items-center gap-2">
+              {cameraEnabled ? (
+                <><span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/> VISION ON</>
+              ) : (
+                <><span className="w-2 h-2 rounded-full bg-red-500"/> VISION OFF</>
+              )}
+            </span>
+          </button>
+        )}
+
+        {/* 声音开关 */}
+        <button
+          onClick={onToggleMute}
+          className="w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
+          title="Toggle Music"
+        >
+          <span className="text-lg">{isMuted ? '🔇' : '🔊'}</span>
+        </button>
+      </div>
+
+      {/* 4. 底部操作提示 */}
       <div 
         className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-20 transition-opacity duration-1000 w-max max-w-[90vw]"
         style={{ 
@@ -41,7 +78,7 @@ export default function UIOverlay({ state, isMobile, cameraEnabled, onToggleCame
           borderRadius: '30px',
           borderTop: '1px solid rgba(255, 215, 0, 0.3)',
           borderBottom: '1px solid rgba(255, 215, 0, 0.3)',
-          pointerEvents: 'none' // 让点击穿透到底层的 Canvas
+          pointerEvents: 'none'
         }}
       >
         <p style={{ 
@@ -55,35 +92,19 @@ export default function UIOverlay({ state, isMobile, cameraEnabled, onToggleCame
           whiteSpace: 'nowrap'
         }}>
           {isMobile 
-            ? '👆 Tap Screen to Toggle • ✨ Experience Luxury'
+            ? '👆 点击屏幕切换状态 • ✨ 体验奢华互动'
             : cameraEnabled 
-              ? '🖐️ Open: Chaos • ✊ Fist: Form • 👋 Move: Rotate View'
-              : '🖱️ Click to Toggle State • 📷 Enable Camera for Magic'
+              ? '🖐️ 张手: 散开 • ✊ 握拳: 聚合 • 👋 移动: 旋转'
+              : '🖱️ 点击切换状态 • 📷 开启摄像头体验魔法'
           }
         </p>
       </div>
 
-      {/* Camera Toggle Button (Desktop) */}
-      {!isMobile && (
-        <button
-          onClick={onToggleCamera}
-          className="fixed top-8 left-8 z-20 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-luxury-gold/30 hover:bg-black/80 hover:border-luxury-gold transition-all duration-300 group"
-          style={{ opacity: isLoading ? 0 : 1 }}
-        >
-          <span className="text-luxury-gold/80 group-hover:text-luxury-gold text-xs font-bold tracking-wider flex items-center gap-2">
-            {cameraEnabled ? (
-              <><span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/> AI VISION ON</>
-            ) : (
-              <><span className="w-2 h-2 rounded-full bg-red-500"/> AI VISION OFF</>
-            )}
-          </span>
-        </button>
-      )}
-
-      {/* Info Button */}
+      {/* 5. 信息按钮 (Info) */}
       <button
-        onClick={() => {
-          alert('🎄 Grand Luxury Christmas Tree\n\nInteractive 3D Experience\n\n✨ 18,000 Gold-Dust Particles\n🎁 Physics-based Ornaments\n📸 Floating Polaroid Gallery\n\nGestures:\n• Open Hand: Explode Tree\n• Closed Fist: Reform Tree\n• Hand Position: Rotate Camera')
+        onClick={(e) => {
+          e.stopPropagation()
+          alert('🎄 极致奢华互动圣诞树\n(Grand Luxury Christmas Tree)\n\n✨ 沉浸式 3D 视觉盛宴\n\n🌟 数万颗流光金粉粒子\n🎁 纯金丝带礼盒与璀璨钻石\n📸 悬浮拍立得回忆画廊\n\n🔮 交互指南：\n✋ 张开手掌 / 点击屏幕：解构星云 (Unleash)\n✊ 握紧拳头 / 再次点击：重塑辉煌 (Reform)\n👋 手势移动 / 滑动屏幕：环绕视角 (Rotate)')
         }}
         className="fixed bottom-8 right-8 z-20 w-10 h-10 rounded-full border border-luxury-gold/30 bg-black/40 backdrop-blur-md flex items-center justify-center hover:bg-luxury-gold/20 transition-all text-luxury-gold"
         style={{ opacity: isLoading ? 0 : 0.8 }}
