@@ -77,32 +77,34 @@ export default function App() {
             depth: true
           }}
         >
-          {/* --- 1. 触摸/鼠标控制 (OrbitControls) --- */}
-          {/* 只有在 AI 关闭时才启用，避免冲突 */}
+          {/* --- 1. 触摸/鼠标控制 --- */}
           {(!cameraEnabled) && (
             <OrbitControls 
               enableZoom={true} 
               enablePan={false} 
               rotateSpeed={0.5} 
-              // 自动旋转仅在 Formed 状态开启，增加展示感
               autoRotate={state === 'FORMED'} 
               autoRotateSpeed={0.5}
               maxDistance={40}
               minDistance={10}
-              // 移除 azimuth 限制，允许 360 度旋转
+              
+              // [修复 3] 这里的 target 也同步改为 [0, 4.5, 0]
+              // 这样不开摄像头时，树也会稍微往下一点点（之前的 5.5 太高了）
+              // 让视觉重心回到树身的中下部，看起来最稳重
+              target={[0, 4.5, 0]} 
+              
               minPolarAngle={0} 
-              maxPolarAngle={Math.PI / 1.8} // 限制不能钻到地底下去
+              maxPolarAngle={Math.PI / 1.8} 
             />
           )}
 
-          {/* --- 2. 场景内容 --- */}
           <ChristmasScene 
             state={state} 
             progress={progress} 
             handX={handX} 
             handY={handY}
             isMobile={mobile}
-            cameraEnabled={cameraEnabled} // <--- 关键：传进去
+            cameraEnabled={cameraEnabled} 
           />
         </Canvas>
       </Suspense>

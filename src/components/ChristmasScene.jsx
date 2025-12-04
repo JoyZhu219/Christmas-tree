@@ -55,7 +55,7 @@ export default function ChristmasScene({ state, progress, handX, handY, isMobile
       <MemoizedFoliage state={state} progress={progress} isMobile={isMobile} />
       <MemoizedOrnaments state={state} progress={progress} isMobile={isMobile} />
       <MemoizedPolaroids progress={progress} isMobile={isMobile} />
-      <MemoizedTrunk />
+      <MemoizedTrunk progress={progress} />
       <MemoizedStar />
 
       <Environment preset="lobby" background={false} blur={0.6} />
