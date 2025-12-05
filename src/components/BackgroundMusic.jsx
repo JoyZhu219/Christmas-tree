@@ -4,28 +4,37 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
   const audioRef = useRef(null)
   const [hasInteracted, setHasInteracted] = useState(false)
 
-  // 1. 处理第一次点击播放 (浏览器策略)
+  // 1. 监听第一次点击：这是最关键的一步 (iOS/Android 必须)
   useEffect(() => {
     const handleFirstInteraction = () => {
       if (!hasInteracted && audioRef.current) {
-        // 尝试播放
+        // --- 核心修复 ---
+        // 在点击事件内部直接调用 play()，不要等待 state 变化
+        // 这样 iOS 才会认为这是“用户想听”，从而授权音频播放
+        
+        audioRef.current.muted = false // 确保不静音
+        // 尝试设置音量 (在部分手机上可能无效，但对 PC 有用)
+        audioRef.current.volume = 0.5 
+        
         const playPromise = audioRef.current.play()
         
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
+              console.log("Audio started successfully")
               setHasInteracted(true)
-              // 移除监听器
+              // 成功播放后，移除监听器
               window.removeEventListener('click', handleFirstInteraction)
               window.removeEventListener('touchstart', handleFirstInteraction)
             })
             .catch(error => {
-              console.log("Auto-play prevented, waiting for interaction:", error)
+              console.log("Auto-play prevented:", error)
             })
         }
       }
     }
 
+    // 监听整个窗口的点击
     window.addEventListener('click', handleFirstInteraction)
     window.addEventListener('touchstart', handleFirstInteraction)
 
@@ -35,28 +44,19 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
     }
   }, [hasInteracted])
 
-  // 2. 处理静音/播放逻辑 (修复了手机端无效的问题)
+  // 2. 监听 Mute 开关
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && hasInteracted) {
       if (isMuted) {
-        // --- 手机端修复核心 ---
-        // 不要依赖 volume 渐变，直接使用 muted 属性或 pause
-        // muted = true 是硬件加速的，最稳健
-        audioRef.current.muted = true 
-        // 可选：为了省电和流量，直接暂停
+        // 手机端静音最稳健的方法：设置 muted 属性并暂停
+        audioRef.current.muted = true
         audioRef.current.pause() 
       } else {
-        // 取消静音
+        // 取消静音并恢复播放
         audioRef.current.muted = false
-        // 只有当用户已经交互过（解锁了音频上下文）才播放
-        if (hasInteracted) {
-            // 手机端音量通常不可控，这行代码在PC生效，手机忽略
-            audioRef.current.volume = 0.5 
-            
-            const playPromise = audioRef.current.play()
-            if (playPromise !== undefined) {
-                playPromise.catch(e => console.log("Resume play failed:", e))
-            }
+        const playPromise = audioRef.current.play()
+        if (playPromise !== undefined) {
+            playPromise.catch(e => console.log("Resume failed:", e))
         }
       }
     }
@@ -65,10 +65,10 @@ export default function BackgroundMusic({ isMuted, onToggleMute }) {
   return (
     <audio 
         ref={audioRef} 
-        src="/music/bgm.mp4" // 确保这里是你压缩好的小文件
+        src="/music/bgm.mp3" 
         loop 
         preload="auto" 
-        playsInline // 增加这个属性，对兼容性有帮助
+        playsInline 
     />
   )
 }
